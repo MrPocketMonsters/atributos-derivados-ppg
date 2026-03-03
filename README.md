@@ -58,8 +58,8 @@ Los datos deben estar en formato tabular **CSV**.
 2. **Crear un entorno virtual** (recomendado):
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # En Linux/Mac
+   python -m venv .venv
+   source .venv/bin/activate  # En Linux/Mac
    ```
 
 3. **Instalar dependencias**:
