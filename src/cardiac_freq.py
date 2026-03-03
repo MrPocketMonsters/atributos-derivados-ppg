@@ -11,7 +11,7 @@ def intervals_in_seconds(ppg_signal: np.ndarray, fs: float) -> np.ndarray:
     """Calculates the intervals between heartbeats in seconds from a PPG signal."""
 
     # Common processing steps:
-    filtered_signal = bandpass_filter(ppg_signal, lowcut=0.5, highcut=4.0, fs=fs)
+    filtered_signal = bandpass_filter(ppg_signal, fs)
     normalized_signal = robust_normalize(filtered_signal)
 
     # Find the peaks in the normalized signal, expecting them to correspond to heartbeats.

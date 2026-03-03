@@ -20,11 +20,8 @@ from src.config import (
 
 
 
-def process(input: pd.DataFrame) -> pd.DataFrame:
+def process(input: pd.DataFrame, fs: float) -> pd.DataFrame:
     """Processes the input DataFrame to calculate cardiac frequency attributes."""
-
-    # Calculate sampling frequency from index timestamps
-    fs = calculate_frequency(input.index.values)
 
     # Process each row in the DataFrame
     results = []
@@ -78,13 +75,15 @@ def main():
     if not all(col in in_df.columns for col in COLUMNS):
         raise ValueError(f"Input CSV must contain the following columns: {COLUMNS}")
 
+    # Calculate sampling frequency from index timestamps
+    fs = calculate_frequency(in_df.index.values)
     # Process the input DataFrame
-    out_df = process(in_df)
+    out_df = process(in_df, fs)
 
     # Do common processing on the input
     proc_in_df = in_df.copy()
     for col in COLUMNS:
-        proc_in_df[col] = bandpass_filter(proc_in_df[col].values, lowcut=0.5, highcut=4.0, fs=100)
+        proc_in_df[col] = bandpass_filter(proc_in_df[col].values, fs)
         proc_in_df[col] = robust_normalize(proc_in_df[col].values)
 
     # Draw processed input DataFrame
