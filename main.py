@@ -8,14 +8,23 @@ from src.cardiac_freq import (
     calculate_cardiac_frequency_variability,
     is_tachycardic
 )
-from src.common import calc_diff, bandpass_filter, robust_normalize
-from src.config import COLUMNS, COLUMNS_COLORS
+from src.common import (
+  calculate_frequency,
+  bandpass_filter,
+  robust_normalize
+)
+from src.config import (
+  COLUMNS,
+  COLUMNS_COLORS
+)
+
+
 
 def process(input: pd.DataFrame) -> pd.DataFrame:
     """Processes the input DataFrame to calculate cardiac frequency attributes."""
 
     # Calculate sampling frequency from index timestamps
-    fs = calc_diff(input.index.values)
+    fs = calculate_frequency(input.index.values)
 
     # Process each row in the DataFrame
     results = []
@@ -34,6 +43,7 @@ def process(input: pd.DataFrame) -> pd.DataFrame:
 
     return pd.DataFrame(results)
 
+
 def draw_plot(input: pd.DataFrame, name: str, output_path: str) -> None:
     """Draws a plot of the PPG signals from the input DataFrame and saves it to the specified output path."""
 
@@ -49,6 +59,7 @@ def draw_plot(input: pd.DataFrame, name: str, output_path: str) -> None:
     plt.legend()
     plt.grid()
     plt.savefig(output_path)
+
 
 def main():
     """Main function to execute the cardiac frequency analysis pipeline."""
@@ -86,6 +97,7 @@ def main():
     csv_output_path = os.path.join("data", "output", args.input_csv)
     out_df.to_csv(csv_output_path, index=False)
     print(f"Results saved to {csv_output_path}")
+
 
 if __name__ == "__main__":
     main()
