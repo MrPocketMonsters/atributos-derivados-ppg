@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
+from src.oximetry import calculate_spo2
 from src.cardiac_freq import (
     calculate_cardiac_frequency,
     calculate_cardiac_frequency_variability,
@@ -80,6 +81,10 @@ def main():
     # Process the input DataFrame
     out_df = process(in_df, fs)
 
+    # Calculate SpO2 using the RED and IR signals
+    spo2 = calculate_spo2(in_df["RED"].values, in_df["IR"].values, fs)
+    out_df["Estimated SpO2"] = spo2
+
     # Do common processing on the input
     proc_in_df = in_df.copy()
     for col in COLUMNS:
@@ -90,13 +95,13 @@ def main():
     file_name_prefix = os.path.splitext(args.input_csv)[0]
 
     # Draw processed input DataFrame
-    img_output_name = file_name_prefix + "_processed_plot.png"
+    img_output_name = file_name_prefix + "_processed-plot.png"
     img_output_path = os.path.join("data", "output", img_output_name)
     draw_plot(proc_in_df, args.input_csv, img_output_path)
     print(f"Plot saved to {img_output_path}")
 
     # Save results to output CSV
-    csv_output_path = os.path.join("data", "output", file_name_prefix + "_cardiac_frequency.csv")
+    csv_output_path = os.path.join("data", "output", file_name_prefix + "_derived-data.csv")
     out_df.to_csv(csv_output_path, index=False)
     print(f"Results saved to {csv_output_path}")
 
