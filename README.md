@@ -36,9 +36,9 @@ Los datos deben estar en formato tabular **CSV**.
   | 1763344895248 | 914959 | 1293861 | 17875 |
   | ... | ... | ... | ... |
 
-- Los resultados de `data/output/` conservarán un nombre correspondiente al archivo original procesado con las derivaciones computadas añadidas.
+- Los resultados en `data/output/` conservarán el nombre del archivo original procesado acompañado del sufijo `_cardiac_frequency.csv`.
 
-  `data/output/2025-11-17T02-01-41Z_ppg.csv`:
+  `data/output/2025-11-17T02-01-41Z_ppg_cardiac_frequency.csv`:
 
   | Column | Heart Rate (BPM) | Frequency Variability (s) | Tachycardic |
   | --- | --- | --- | --- |
@@ -46,11 +46,11 @@ Los datos deben estar en formato tabular **CSV**.
   | IR | 68.62745098039215 | 0.07228063223242011 | False |
   | GREEN | 67.41573033707866 | 0.03872983346207418 | False |
 
-  El plot generado se guardará con el mismo nombre pero con extensión `.png`:
+  El plot generado se guardará con el sufijo `_processed_plot.png`:
 
-  `data/output/2025-11-17T02-01-41Z_ppg.png`:
+  `data/output/2025-11-17T02-01-41Z_ppg_processed_plot.png`:
 
-  ![Ejemplo de Plot PPG](data/output/2025-11-17T02-01-41Z_ppg.png)
+  ![Ejemplo de Plot PPG](data/output/2025-11-17T02-01-41Z_ppg_processed_plot.png)
 
 ## Instalación y Configuración (Setup)
 
@@ -77,4 +77,4 @@ Los datos deben estar en formato tabular **CSV**.
    python -m main 2025-11-17T02-01-41Z_ppg.csv
    ```
 
-3. Los resultados derivados se guardarán automáticamente en `data/output/`, los atributos con el mismo nombre del archivo original, y el plot con el mismo nombre pero con extensión `.png`.
+3. Los resultados derivados se guardarán automáticamente en `data/output/`. El archivo CSV con los atributos tendrá el sufijo `_cardiac_frequency.csv` y el gráfico generado tendrá el sufijo `_processed_plot.png`.

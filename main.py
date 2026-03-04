@@ -6,27 +6,27 @@ import matplotlib.pyplot as plt
 from src.cardiac_freq import (
     calculate_cardiac_frequency,
     calculate_cardiac_frequency_variability,
-    is_tachycardic
+    is_tachycardic,
 )
 from src.common import (
   calculate_frequency,
   bandpass_filter,
-  robust_normalize
+  robust_normalize,
 )
 from src.config import (
   COLUMNS,
-  COLUMNS_COLORS
+  COLUMNS_COLORS,
 )
 
 
 
-def process(input: pd.DataFrame, fs: float) -> pd.DataFrame:
+def process(in_df: pd.DataFrame, fs: float) -> pd.DataFrame:
     """Processes the input DataFrame to calculate cardiac frequency attributes."""
 
     # Process each row in the DataFrame
     results = []
     for col in COLUMNS:
-        ppg_signal = input[col].values
+        ppg_signal = in_df[col].values
         heart_rate = calculate_cardiac_frequency(ppg_signal, fs)
         variability = calculate_cardiac_frequency_variability(ppg_signal, fs)
         tachycardic = is_tachycardic(ppg_signal, fs)
@@ -35,7 +35,7 @@ def process(input: pd.DataFrame, fs: float) -> pd.DataFrame:
             "Column": col,
             "Heart Rate (BPM)": heart_rate,
             "Frequency Variability (s)": variability,
-            "Tachycardic": tachycardic
+            "Tachycardic": tachycardic,
         })
 
     return pd.DataFrame(results)
@@ -86,14 +86,17 @@ def main():
         proc_in_df[col] = bandpass_filter(proc_in_df[col].values, fs)
         proc_in_df[col] = robust_normalize(proc_in_df[col].values)
 
+    # Get name of the input file without extension for output naming
+    file_name_prefix = os.path.splitext(args.input_csv)[0]
+
     # Draw processed input DataFrame
-    img_output_name = os.path.splitext(args.input_csv)[0] + ".png"
+    img_output_name = file_name_prefix + "_processed_plot.png"
     img_output_path = os.path.join("data", "output", img_output_name)
     draw_plot(proc_in_df, args.input_csv, img_output_path)
     print(f"Plot saved to {img_output_path}")
 
     # Save results to output CSV
-    csv_output_path = os.path.join("data", "output", args.input_csv)
+    csv_output_path = os.path.join("data", "output", file_name_prefix + "_cardiac_frequency.csv")
     out_df.to_csv(csv_output_path, index=False)
     print(f"Results saved to {csv_output_path}")
 
