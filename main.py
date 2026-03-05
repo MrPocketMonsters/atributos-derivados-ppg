@@ -62,48 +62,48 @@ def draw_plot(input: pd.DataFrame, name: str, output_path: str) -> None:
 def main():
     """Main function to execute the cardiac frequency analysis pipeline."""
 
-    parser = argparse.ArgumentParser(description="Calculate cardiac frequency attributes from PPG data.")
-    parser.add_argument(
-        "input_csv",
-        type=str,
-        help="Name of the input CSV file containing PPG data with columns: RED, IR, GREEN. Must be in $PWD/data/input"
-    )
-    args = parser.parse_args()
-
     # Load PPG data from CSV
-    input_relpath = os.path.join("data", "input", args.input_csv)
-    in_df = pd.read_csv(input_relpath, index_col=0)
-    if not all(col in in_df.columns for col in COLUMNS):
-        raise ValueError(f"Input CSV must contain the following columns: {COLUMNS}")
+    file_names = os.listdir(os.path.join("data", "input"))
+    for file_name in file_names:
+        input_path = os.path.join("data", "input", file_name)
+        in_df = pd.read_csv(input_path, index_col=0)
 
-    # Calculate sampling frequency from index timestamps
-    fs = calculate_frequency(in_df.index.values)
-    # Process the input DataFrame
-    out_df = process(in_df, fs)
+        if not all(col in in_df.columns for col in COLUMNS):
+            raise ValueError(f"Input CSV must contain the following columns: {COLUMNS}")
 
-    # Calculate SpO2 using the RED and IR signals
-    spo2 = calculate_spo2(in_df["RED"].values, in_df["IR"].values, fs)
-    out_df["Estimated SpO2"] = spo2
+        # if the index is float, it means it has been converted to seconds. Multiply by 1000 and convert to int
+        if in_df.index.dtype == float:
+            in_df.index = (in_df.index * 1000).astype(int)
 
-    # Do common processing on the input
-    proc_in_df = in_df.copy()
-    for col in COLUMNS:
-        proc_in_df[col] = bandpass_filter(proc_in_df[col].values, fs)
-        proc_in_df[col] = robust_normalize(proc_in_df[col].values)
+        # Calculate sampling frequency from index timestamps
+        fs = calculate_frequency(in_df.index.values)
 
-    # Get name of the input file without extension for output naming
-    file_name_prefix = os.path.splitext(args.input_csv)[0]
+        # Process the input DataFrame
+        out_df = process(in_df, fs)
 
-    # Draw processed input DataFrame
-    img_output_name = file_name_prefix + "_processed-plot.png"
-    img_output_path = os.path.join("data", "output", img_output_name)
-    draw_plot(proc_in_df, args.input_csv, img_output_path)
-    print(f"Plot saved to {img_output_path}")
+        # Calculate SpO2 using the RED and IR signals
+        spo2 = calculate_spo2(in_df["RED"].values, in_df["IR"].values, fs)
+        out_df["Estimated SpO2"] = spo2
 
-    # Save results to output CSV
-    csv_output_path = os.path.join("data", "output", file_name_prefix + "_derived-data.csv")
-    out_df.to_csv(csv_output_path, index=False)
-    print(f"Results saved to {csv_output_path}")
+        # Do common processing on the input
+        proc_in_df = in_df.copy()
+        for col in COLUMNS:
+            proc_in_df[col] = bandpass_filter(proc_in_df[col].values, fs)
+            proc_in_df[col] = robust_normalize(proc_in_df[col].values)
+
+        # Get name of the input file without extension for output naming
+        file_name_prefix = os.path.splitext(file_name)[0]
+
+        # Draw processed input DataFrame
+        img_output_name = file_name_prefix + "_processed-plot.png"
+        img_output_path = os.path.join("data", "output", img_output_name)
+        draw_plot(proc_in_df, file_name, img_output_path)
+        print(f"Plot saved to {img_output_path}")
+
+        # Save results to output CSV
+        csv_output_path = os.path.join("data", "output", file_name_prefix + "_derived-data.csv")
+        out_df.to_csv(csv_output_path, index=False)
+        print(f"Results saved to {csv_output_path}")
 
 
 if __name__ == "__main__":
