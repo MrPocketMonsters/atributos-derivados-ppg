@@ -13,5 +13,5 @@ DEFAULT_HIGHCUT = 4.0  # Hz
 TACHYCARDIA_THRESHOLD = 100  # BPM
 
 # TODO: These fixtures must be calibrated based on empirical data
-OXYMETRY_SLOPE_FIXTURE = 0.5  # Coefficient for calculating SpO2 from RED and IR signals
-OXYMETRY_INTERCEPT_FIXTURE = 0.5  # Intercept for calculating SpO2 from RED and IR signals
+DEFAULT_OXIMETRY_SLOPE = 0.5  # Coefficient for calculating SpO2 from RED and IR signals
+DEFAULT_OXIMETRY_INTERCEPT = 0.5  # Intercept for calculating SpO2 from RED and IR signals

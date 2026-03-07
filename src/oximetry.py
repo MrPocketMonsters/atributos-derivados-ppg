@@ -5,8 +5,8 @@ from scipy.signal import find_peaks
 
 from .common import bandpass_filter
 from .config import (
-    OXYMETRY_INTERCEPT_FIXTURE,
-    OXYMETRY_SLOPE_FIXTURE,
+    DEFAULT_OXIMETRY_INTERCEPT,
+    DEFAULT_OXIMETRY_SLOPE,
 )
 
 def _find_ac_dc_relation(signal: np.ndarray, fs: float) -> float:
@@ -28,7 +28,13 @@ def _find_ac_dc_relation(signal: np.ndarray, fs: float) -> float:
 
     return ac_component / dc_component
 
-def calculate_spo2(red_signal: np.ndarray, ir_signal: np.ndarray, fs: float) -> np.ndarray:
+def calculate_spo2(
+        red_signal: np.ndarray,
+        ir_signal: np.ndarray,
+        fs: float,
+        slope: float = DEFAULT_OXIMETRY_SLOPE,
+        intercept: float = DEFAULT_OXIMETRY_INTERCEPT,
+    ) -> np.ndarray:
     """Calculates the estimated SpO2 from the RED and IR signals using a linear model."""
 
     red_relation = _find_ac_dc_relation(red_signal, fs)
@@ -37,6 +43,6 @@ def calculate_spo2(red_signal: np.ndarray, ir_signal: np.ndarray, fs: float) -> 
     ratio = red_relation / ir_relation
 
     # Apply the linear model to estimate SpO2
-    spo2 = OXYMETRY_SLOPE_FIXTURE * ratio + OXYMETRY_INTERCEPT_FIXTURE
+    spo2 = slope * ratio + intercept
 
     return spo2
