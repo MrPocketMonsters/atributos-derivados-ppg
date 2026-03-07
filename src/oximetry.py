@@ -34,7 +34,7 @@ def calculate_spo2(
         fs: float,
         slope: float = DEFAULT_OXIMETRY_SLOPE,
         intercept: float = DEFAULT_OXIMETRY_INTERCEPT,
-    ) -> np.ndarray:
+    ) -> float:
     """Calculates the estimated SpO2 from the RED and IR signals using a linear model."""
 
     red_relation = _find_ac_dc_relation(red_signal, fs)

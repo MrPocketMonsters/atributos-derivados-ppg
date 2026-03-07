@@ -18,6 +18,8 @@ El repositorio está organizado de la siguiente manera:
 │   ├── common.py        # Funciones auxiliares
 │   ├── config.py        # Parámetros y constantes
 │   └── oximetry.py      # Cálculo estimado de SpO2 (RED/IR)
+├── utils/
+│   └── optimize.py      # Optimización de slope/intercept para estimación SpO2
 ├── main.py          # Script principal que procesa la carpeta `data/input/`
 └── requirements.txt # Dependencias de Python
 ```
@@ -47,11 +49,40 @@ Salida prevista en `data/output/`:
 
    | Column | Heart Rate (BPM) | Frequency Variability (s) | Tachycardic | Estimated SpO2 |
    | --- | --- | --- | --- | --- |
-   | RED | 71.00591715976331 | 0.11213830746002902 | False | 0.7186912844110811 |
-   | IR | 68.62745098039215 | 0.07228063223242011 | False | 0.7186912844110811 |
-   | GREEN | 67.41573033707866 | 0.03872983346207418 | False | 0.7186912844110811 |
+   | RED | 71.00591715976331 | 0.11213830746002902 | False | 0.4347876597605702 |
+   | IR | 68.62745098039215 | 0.07228063223242011 | False | 0.4347876597605702 |
+   | GREEN | 67.41573033707866 | 0.03872983346207418 | False | 0.4347876597605702 |
 
 - Plot por archivo con sufijo `_processed-plot.png`.
+
+## Metadata para optimización
+
+Para poder optimizar los parámetros de estimación de SpO2 existe un archivo de metadata `data/oximetry_metadata.csv` (ya presente en el repositorio como demostración). Debe tener el siguiente formato:
+
+- `file`: ruta relativa al archivo de entrada CSV (p. ej. `./data/input/43_galaxy_25hz.csv`)
+- `SpO2`: valor de SpO2 medido o de referencia (numérico)
+
+| file | SpO2 |
+| --- | --- |
+| ./data/input/43_galaxy_25hz.csv | 0.93 |
+| ./data/input/45_galaxy_25hz.csv | 0.98 |
+
+Esta metadata es usada por la utilidad de optimización para ajustar la relación AC/DC -> SpO2.
+
+## Optimización de parámetros de oximetría
+
+El repositorio incluye `utils/optimize.py`, que ajusta por mínimos cuadrados el slope e intercept que relacionan la razón AC/DC con el SpO2 de referencia.
+
+Uso rápido:
+
+```bash
+python -m utils.optimize
+```
+
+Opciones importantes:
+
+- `input_folder` (por defecto `./data/input/`) y `metadata_file` (por defecto `./data/oximetry_metadata.csv`) se usan para recoger muestras.
+- El script imprime en consola `Optimized Slope` y `Intercept`. Puedes copiar esos valores a `src/config.py` (`DEFAULT_OXIMETRY_SLOPE` y `DEFAULT_OXIMETRY_INTERCEPT`) para usarlos como valores por defecto.
 
 ## Instalación y Configuración (Setup)
 
