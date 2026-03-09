@@ -47,13 +47,15 @@ Salida prevista en `data/output/`:
 
 - CSV con sufijo `_derived-data.csv` agregando las columnas derivadas (por canal): frecuencia cardíaca, variabilidad, indicador de taquicardia, estimación de SpO2.
 
-   | Column | Heart Rate (BPM) | Frequency Variability (s) | Tachycardic | Estimated SpO2 |
-   | --- | --- | --- | --- | --- |
-   | RED | 71.00591715976331 | 0.11213830746002902 | False | 0.4347876597605702 |
-   | IR | 68.62745098039215 | 0.07228063223242011 | False | 0.4347876597605702 |
-   | GREEN | 67.41573033707866 | 0.03872983346207418 | False | 0.4347876597605702 |
+  | Column | Heart Rate (BPM) | Frequency Variability (s) | Tachycardic | Estimated SpO2 |
+  | --- | --- | --- | --- | --- |
+  | RED | 71.00591715976331 | 0.11213830746002902 | False | 0.4347876597605702 |
+  | IR | 68.62745098039215 | 0.07228063223242011 | False | 0.4347876597605702 |
+  | GREEN | 67.41573033707866 | 0.03872983346207418 | False | 0.4347876597605702 |
 
 - Plot por archivo con sufijo `_processed-plot.png`.
+
+  ![Ejemplo de gráfico procesado](./data/output/2025-11-17T02-01-41Z_ppg_processed-plot.png)
 
 ## Metadata para optimización
 
